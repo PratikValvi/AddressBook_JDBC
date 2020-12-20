@@ -35,4 +35,13 @@ class AddressBookServiceTest {
                         .IOService.DB_IO, startDate, endDate);
         assertEquals(2, addressBookDataList.size());
     }
+
+    @Test
+    public void givenState_WhenRetrieved_ShouldMatchEntryCount() {
+        AddressBookService addressBookService = new AddressBookService();
+        List<Person> addressBookDataList =
+                addressBookService.countPeopleFromGivenCity(AddressBookService
+                        .IOService.DB_IO, "Satara");
+        assertEquals(1, addressBookDataList.size());
+    }
 }
