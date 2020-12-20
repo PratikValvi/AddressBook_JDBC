@@ -53,4 +53,8 @@ class AddressBookService {
             return addressBookDBService.getAddressBookForDateRange(startDate, endDate);
         return null;
     }
+
+    public List<Person> countPeopleFromGivenCity(IOService ioService, String city) {
+        return addressBookDBService.countPeopleFromGivenCity(city);
+    }
 }

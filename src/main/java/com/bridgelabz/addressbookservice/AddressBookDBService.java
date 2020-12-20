@@ -125,4 +125,9 @@ class AddressBookDBService {
         }
         return addressBookList;
     }
+
+    public List<Person> countPeopleFromGivenCity(String city) {
+        String sql = String.format("SELECT * FROM addressbook_table WHERE city =  '%s';", city);
+        return this.getAddressBookDataUsingDB(sql);
+    }
 }
