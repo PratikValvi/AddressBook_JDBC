@@ -107,4 +107,22 @@ class AddressBookDBService {
             e.printStackTrace();
         }
     }
+
+    public List<Person> getAddressBookForDateRange(LocalDate startDate, LocalDate endDate) {
+        String sql = String.format("SELECT * FROM addressbook_table WHERE entryDate BETWEEN '%s' AND '%s';",
+                Date.valueOf(startDate), Date.valueOf(endDate));
+        return this.getAddressBookDataUsingDB(sql);
+    }
+
+    private List<Person> getAddressBookDataUsingDB(String sql) {
+        List<Person> addressBookList = new ArrayList<>();
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            addressBookList = this.getPersonData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addressBookList;
+    }
 }
