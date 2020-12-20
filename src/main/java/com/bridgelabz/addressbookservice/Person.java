@@ -2,18 +2,19 @@ package com.bridgelabz.addressbookservice;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 public class Person {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String city;
-    private String state;
-    private String zip;
-    private String mobileNumber;
-    private String email;
-    private LocalDate entryDate;
+    int id;
+    String firstName;
+    String lastName;
+    String address;
+    String city;
+    String state;
+    String zip;
+    String mobileNumber;
+    String email;
+    LocalDate entryDate;
 
     public Person(int id, String firstName, String lastName, String address, String city, String state, String zip, String mobileNumber, String email, LocalDate entryDate) {
         this.id = id;
@@ -82,5 +83,13 @@ public class Person {
                 "\nEmail: " + email +
                 "\nEntry Date: " + entryDate;
         return details;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+        Person person = (Person) o;
+        return id == person.id && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address) && Objects.equals(city, person.city) && Objects.equals(state, person.state) && Objects.equals(zip, person.zip) && Objects.equals(mobileNumber, person.mobileNumber) && Objects.equals(email, person.email) && Objects.equals(entryDate, person.entryDate);
     }
 }
