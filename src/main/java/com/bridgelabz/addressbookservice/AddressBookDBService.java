@@ -130,4 +130,27 @@ class AddressBookDBService {
         String sql = String.format("SELECT * FROM addressbook_table WHERE city =  '%s';", city);
         return this.getAddressBookDataUsingDB(sql);
     }
+
+    public Person addEntryToPayroll(int id, String firstName, String lastName, String address, String city, String state, String zip, String mobileNumber, String email, LocalDate entryDate) {
+        Person person = null;
+        firstName = "'"+firstName+"'";
+        lastName = "'"+lastName+"'";
+        address = "'"+address+"'";
+        city = "'"+city+"'";
+        state = "'"+state+"'";
+        zip = "'"+zip+"'";
+        mobileNumber = "'"+mobileNumber+"'";
+        email = "'"+email+"'";
+        String date = "'"+entryDate.toString()+"'";
+        String sql = "INSERT INTO addressbook_table VALUES ("+id+","+firstName+","+lastName+","+address+","+city+","+state+","+zip+","+mobileNumber+","+email+","+date+");";
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            System.out.println("Record Added");
+            person = new Person(id, firstName, lastName, address, city, state, zip, mobileNumber, email, entryDate);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
+    }
 }

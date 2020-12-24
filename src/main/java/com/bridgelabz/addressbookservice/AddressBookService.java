@@ -1,11 +1,13 @@
 package com.bridgelabz.addressbookservice;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class AddressBookService {
 
-    public enum IOService {DB_IO}
+    public enum IOService {DB_IO,REST_IO,FILE_IO}
     private List<Person> personList;
     private AddressBookDBService addressBookDBService;
 
@@ -40,9 +42,6 @@ class AddressBookService {
 
     public boolean checkAddressBookInSyncWithDB(String firstName) {
         List<Person> personList = addressBookDBService.getPersonData(firstName);
-        for (Person person : personList) {
-            person.toString();
-        }
         Person p1 = personList.get(0);
         Person p2 = getAddressBookData(firstName);
         return p1.equals(p2);
@@ -56,5 +55,68 @@ class AddressBookService {
 
     public List<Person> countPeopleFromGivenCity(IOService ioService, String city) {
         return addressBookDBService.countPeopleFromGivenCity(city);
+    }
+
+    public void addEmployeeToAddressBook(int id,String firstName, String lastName, String address, String city, String state, String zip, String mobileNumber, String email, LocalDate entryDate) {
+        personList.add(addressBookDBService.addEntryToPayroll(id, firstName, lastName, address, city, state, zip, mobileNumber, email, entryDate));
+    }
+
+    public boolean checkNameInDatabase(int id) {
+        boolean status = false;
+        for (Person person : personList) {
+            if (person.getId() == id) {
+                status = true;
+            }
+        }
+        return status;
+    }
+
+    public void addMultipleRecordsToAddressBook(List<Person> List) {
+        List.forEach(person -> {
+            System.out.println("Person Being Added: " + person.getFirstName());
+            this.addEmployeeToAddressBook(person.getId(),
+                    person.getFirstName(),
+                    person.getLastName(),
+                    person.getAddress(),
+                    person.getCity(),
+                    person.getState(),
+                    person.getZip(),
+                    person.getMobileNumber(),
+                    person.getEmail(),
+                    person.getEntryDate());
+            System.out.println("Person Added: " + person.getFirstName());
+            //System.out.println(personList);
+        });
+    }
+
+    public void addMultipleRecordsUsingThreadToAddressBook(List<Person> List) {
+        Map<Integer, Boolean> personAdditionStatus = new HashMap<>();
+        List.forEach(person -> {
+            Runnable task = () -> {
+                personAdditionStatus.put(person.hashCode(), false);
+                System.out.println("Person Being Added: " + Thread.currentThread().getName());
+                this.addEmployeeToAddressBook(person.getId(),
+                        person.getFirstName(),
+                        person.getLastName(),
+                        person.getAddress(),
+                        person.getCity(),
+                        person.getState(),
+                        person.getZip(),
+                        person.getMobileNumber(),
+                        person.getEmail(),
+                        person.getEntryDate());
+                personAdditionStatus.put(person.hashCode(), true);
+                System.out.println("Person Added: " + Thread.currentThread().getName());
+            };
+            Thread thread = new Thread(task, person.firstName);
+            thread.start();
+        });
+        while (personAdditionStatus.containsValue(false)) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+
+            }
+        }
     }
 }
