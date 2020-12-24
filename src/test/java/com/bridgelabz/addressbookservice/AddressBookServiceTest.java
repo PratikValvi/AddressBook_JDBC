@@ -1,5 +1,9 @@
 package com.bridgelabz.addressbookservice;
 
+import com.google.gson.Gson;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Array;
@@ -119,5 +123,28 @@ class AddressBookServiceTest {
         System.out.println("Duration with Thread: " + Duration.between(startForThread,endForThread));
         boolean status = addressBookService.checkNameInDatabase(14);
         assertEquals(true, status);
+    }
+
+    @Before
+    public void setup() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = 3000;
+    }
+
+    public Person[] getPersonList() {
+        setup();
+        Response response = RestAssured.get("/Persons");
+        System.out.println("PERSON DATA IN JSON Server :\n" + response.asString());
+        Person[] arrayOfPersons = new Gson().fromJson(response.asString(), Person[].class);
+        return arrayOfPersons;
+    }
+
+    @Test
+    public void givenPersonDataInJSONServerWhenRetrivedShouldMatchTheCount(){
+        Person[] arrayOfPersons = getPersonList();
+        AddressBookService addressBookService;
+        addressBookService = new AddressBookService(Arrays.asList(arrayOfPersons));
+        long entries = addressBookService.countEntries(AddressBookService.IOService.REST_IO);
+        assertEquals(2, entries);
     }
 }

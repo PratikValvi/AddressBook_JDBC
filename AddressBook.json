@@ -1,0 +1,36 @@
+{
+  "Persons": [
+    {
+      "id": 1,
+      "firstName": "Pratik",
+      "lastName": "Valvi",
+      "address": "Sadar Bazar",
+      "city": "Satara",
+      "state": "Maharashtra",
+      "zip": "415001",
+      "mobileNumber": "9595260222",
+      "email": "pratik.valvi@gmail.com",
+      "entryDate": {
+        "year": 2020,
+        "month": 12,
+        "day": 22
+      }
+    },
+    {
+      "id": 2,
+      "firstName": "Pranav",
+      "lastName": "Valvi",
+      "address": "Sadar Bazar",
+      "city": "Satara",
+      "state": "Maharashtra",
+      "zip": "415001",
+      "mobileNumber": "8862007111",
+      "email": "pranav.valvi@gmail.com",
+      "entryDate": {
+        "year": 2020,
+        "month": 12,
+        "day": 22
+      }
+    }
+  ]
+}

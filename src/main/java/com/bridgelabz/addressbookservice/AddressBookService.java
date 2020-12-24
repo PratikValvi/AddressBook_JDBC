@@ -119,4 +119,10 @@ class AddressBookService {
             }
         }
     }
+
+    public long countEntries(IOService ioService) {
+        //if (ioService.equals(IOService.FILE_IO))
+        //    return new AddressBookFileIOService().countEntries();
+        return personList.size();
+    }
 }
