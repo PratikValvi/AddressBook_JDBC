@@ -135,4 +135,37 @@ class AddressBookService {
             newPersonList.add(person);
         }
     }
+
+    public void updateMobileNumber(String firstName, String mobileNumber, IOService ioService) {
+        if(ioService.equals(IOService.DB_IO)) {
+            int result = addressBookDBService.updateMobileNumber(firstName, mobileNumber);
+            if (result == 0) return;
+        }
+        Person person = this.getPersonData(firstName);
+        if (person != null) person.mobileNumber = mobileNumber;
+    }
+
+    public void updateContactNumber(String firstName, String mobileNumber) {
+        int result = addressBookDBService.updateMobileNumber(firstName,mobileNumber);
+        if (result == 0) return;
+        Person person = this.getPersonData(firstName);
+        if (person != null) person.mobileNumber = mobileNumber;
+    }
+
+    public void deletePersonFromAddressBook(String firstName, IOService ioService) {
+        if(ioService.equals(IOService.REST_IO)){
+            Person person =this.getPersonData(firstName);
+            boolean checkEntryInPersonList = false;
+            for (Person p : personList) {
+                if (p.equals(person)) {
+                    checkEntryInPersonList = true;
+                }
+            }
+            if(checkEntryInPersonList) {
+                personList.remove(person);
+            } else {
+                newPersonList.remove(person);
+            }
+        }
+    }
 }
