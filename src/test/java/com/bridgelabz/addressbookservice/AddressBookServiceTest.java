@@ -3,13 +3,14 @@ package com.bridgelabz.addressbookservice;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +59,7 @@ class AddressBookServiceTest {
         AddressBookService addressBookService = new AddressBookService();
         addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO);
         LocalDate entryDate = LocalDate.of(2020, 05, 23);
-        addressBookService.addEmployeeToAddressBook(7,"James", "Bond",
+        addressBookService.addPersonToAddressBook(7,"James", "Bond",
                 "Sadar Bazar","Satara", "Maharashtra", "415001", "7777777777","bondjamesbond@gmail.com",entryDate);
         boolean status = addressBookService.checkNameInDatabase(7);
         assertTrue(status);
@@ -146,5 +147,36 @@ class AddressBookServiceTest {
         addressBookService = new AddressBookService(Arrays.asList(arrayOfPersons));
         long entries = addressBookService.countEntries(AddressBookService.IOService.REST_IO);
         assertEquals(2, entries);
+    }
+
+    private Response addPersonToJsonServer(Person person) {
+        String personJson = new Gson().toJson(person);
+        RequestSpecification requestSpecification = RestAssured.given();
+        requestSpecification.header("Content-Type", "application/json");
+        requestSpecification.body(personJson);
+        return requestSpecification.post("/Persons");
+    }
+
+    @Test
+    public void givenListOfNewPersonsWhenAddedShouldMatchResponse201AndCount(){
+        List<Person> list = new ArrayList<>();
+        Person[] arrayOfPersons = getPersonList();
+        System.out.println(arrayOfPersons);
+        AddressBookService addressBookService;
+        addressBookService = new AddressBookService(Arrays.asList(arrayOfPersons));
+        Person[] arrayOfPersonData = {
+                new Person(3, "Suraj", "Nigave", "Vishrambaug", "Sangli", "Maharashtra", "414414", "8888778811", "suraj.nigave@gmail.com", LocalDate.now()),
+                new Person(4, "Roshan", "Valvi", "Mangrul", "Nandurbar", "Maharashtra", "414000", "7777778811", "roshan.valvi@gmail.com", LocalDate.now())
+        };
+        for(Person person : arrayOfPersonData) {
+            Response response = addPersonToJsonServer(person);
+            int statusCode = response.getStatusCode();
+            assertEquals(201, statusCode);
+            person = new Gson().fromJson(response.asString(), Person.class);
+            System.out.println(person.toString());
+            addressBookService.addPersonToAddressBook(person, AddressBookService.IOService.REST_IO);
+        }
+        long entries = addressBookService.countEntries(AddressBookService.IOService.REST_IO);
+        assertEquals(4, entries);
     }
 }

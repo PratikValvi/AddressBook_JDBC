@@ -8,7 +8,7 @@
       "city": "Satara",
       "state": "Maharashtra",
       "zip": "415001",
-      "mobileNumber": "9595260222",
+      "mobileNumber": "9503836038",
       "email": "pratik.valvi@gmail.com",
       "entryDate": {
         "year": 2020,
@@ -17,19 +17,35 @@
       }
     },
     {
-      "id": 2,
-      "firstName": "Pranav",
+      "id": 4,
+      "firstName": "Roshan",
       "lastName": "Valvi",
-      "address": "Sadar Bazar",
-      "city": "Satara",
+      "address": "Mangrul",
+      "city": "Nandurbar",
       "state": "Maharashtra",
-      "zip": "415001",
-      "mobileNumber": "8862007111",
-      "email": "pranav.valvi@gmail.com",
+      "zip": "414000",
+      "mobileNumber": "7777778811",
+      "email": "roshan.valvi@gmail.com",
       "entryDate": {
         "year": 2020,
         "month": 12,
-        "day": 22
+        "day": 25
+      }
+    },
+    {
+      "id": 3,
+      "firstName": "Suraj",
+      "lastName": "Nigave",
+      "address": "Vishrambaug",
+      "city": "Sangli",
+      "state": "Maharashtra",
+      "zip": "414414",
+      "mobileNumber": "8888778811",
+      "email": "suraj.nigave@gmail.com",
+      "entryDate": {
+        "year": 2020,
+        "month": 12,
+        "day": 25
       }
     }
   ]
