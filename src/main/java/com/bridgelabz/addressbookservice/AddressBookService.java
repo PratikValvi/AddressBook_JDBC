@@ -135,4 +135,20 @@ class AddressBookService {
             newPersonList.add(person);
         }
     }
+
+    public void updateMobileNumber(String firstName, String mobileNumber, IOService ioService) {
+        if(ioService.equals(IOService.DB_IO)) {
+            int result = addressBookDBService.updateMobileNumber(firstName, mobileNumber);
+            if (result == 0) return;
+        }
+        Person person = this.getPersonData(firstName);
+        if (person != null) person.mobileNumber = mobileNumber;
+    }
+
+    public void updateContactNumber(String firstName, String mobileNumber) {
+        int result = addressBookDBService.updateMobileNumber(firstName,mobileNumber);
+        if (result == 0) return;
+        Person person = this.getPersonData(firstName);
+        if (person != null) person.mobileNumber = mobileNumber;
+    }
 }
