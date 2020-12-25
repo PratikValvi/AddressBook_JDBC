@@ -1,6 +1,7 @@
 package com.bridgelabz.addressbookservice;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,8 @@ import java.util.Map;
 class AddressBookService {
 
     public enum IOService {DB_IO,REST_IO,FILE_IO}
-    private List<Person> personList;
+    List<Person> personList;
+    List<Person> newPersonList = new ArrayList<>();
     private AddressBookDBService addressBookDBService;
 
     public AddressBookService () {
@@ -29,11 +31,11 @@ class AddressBookService {
     public void updateMobileNumber(String firstName, String mobileNumber) {
         int result = addressBookDBService.updateMobileNumber(firstName,mobileNumber);
         if (result == 0) return;
-        Person person = this.getAddressBookData(firstName);
+        Person person = this.getPersonData(firstName);
         if (person != null) person.mobileNumber = mobileNumber;
     }
 
-    private Person getAddressBookData(String firstName) {
+    public Person getPersonData(String firstName) {
         return this.personList.stream()
                 .filter(addressBookDataItem -> addressBookDataItem.firstName.equals(firstName))
                 .findFirst()
@@ -43,7 +45,7 @@ class AddressBookService {
     public boolean checkAddressBookInSyncWithDB(String firstName) {
         List<Person> personList = addressBookDBService.getPersonData(firstName);
         Person p1 = personList.get(0);
-        Person p2 = getAddressBookData(firstName);
+        Person p2 = getPersonData(firstName);
         return p1.equals(p2);
     }
 
@@ -57,7 +59,7 @@ class AddressBookService {
         return addressBookDBService.countPeopleFromGivenCity(city);
     }
 
-    public void addEmployeeToAddressBook(int id,String firstName, String lastName, String address, String city, String state, String zip, String mobileNumber, String email, LocalDate entryDate) {
+    public void addPersonToAddressBook(int id, String firstName, String lastName, String address, String city, String state, String zip, String mobileNumber, String email, LocalDate entryDate) {
         personList.add(addressBookDBService.addEntryToPayroll(id, firstName, lastName, address, city, state, zip, mobileNumber, email, entryDate));
     }
 
@@ -74,7 +76,7 @@ class AddressBookService {
     public void addMultipleRecordsToAddressBook(List<Person> List) {
         List.forEach(person -> {
             System.out.println("Person Being Added: " + person.getFirstName());
-            this.addEmployeeToAddressBook(person.getId(),
+            this.addPersonToAddressBook(person.getId(),
                     person.getFirstName(),
                     person.getLastName(),
                     person.getAddress(),
@@ -95,7 +97,7 @@ class AddressBookService {
             Runnable task = () -> {
                 personAdditionStatus.put(person.hashCode(), false);
                 System.out.println("Person Being Added: " + Thread.currentThread().getName());
-                this.addEmployeeToAddressBook(person.getId(),
+                this.addPersonToAddressBook(person.getId(),
                         person.getFirstName(),
                         person.getLastName(),
                         person.getAddress(),
@@ -123,6 +125,14 @@ class AddressBookService {
     public long countEntries(IOService ioService) {
         //if (ioService.equals(IOService.FILE_IO))
         //    return new AddressBookFileIOService().countEntries();
-        return personList.size();
+        return personList.size()+newPersonList.size();
+    }
+
+    public void addPersonToAddressBook(Person person, IOService ioService) {
+        if (ioService.equals(IOService.DB_IO)) {
+            this.addPersonToAddressBook(person.id, person.firstName, person.lastName, person.address, person.city, person.state, person.zip, person.mobileNumber, person.email, person.entryDate);
+        } else {
+            newPersonList.add(person);
+        }
     }
 }
